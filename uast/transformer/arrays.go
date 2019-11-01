@@ -10,7 +10,7 @@ func MapEach(vr string, m Mapping) Mapping {
 // ArrayOp is a subset of operations that operates on an arrays with a pre-defined size. See Arr.
 type ArrayOp interface {
 	Op
-	Arr(st *State) (opArr, error)
+	Arr(st *State) (OpArr, error)
 }
 
 // Arr checks if the current object is a list with a number of elements
@@ -18,19 +18,19 @@ type ArrayOp interface {
 // Reversal creates a list of the size that matches the number of ops
 // and creates each element with the corresponding op.
 func Arr(ops ...Op) ArrayOp {
-	return opArr(ops)
+	return OpArr(ops)
 }
 
-type opArr []Op
+type OpArr []Op
 
-func (opArr) Kinds() nodes.Kind {
+func (OpArr) Kinds() nodes.Kind {
 	return nodes.KindArray
 }
 
-func (op opArr) Arr(_ *State) (opArr, error) {
+func (op OpArr) Arr(_ *State) (OpArr, error) {
 	return op, nil
 }
-func (op opArr) Check(st *State, n nodes.Node) (bool, error) {
+func (op OpArr) Check(st *State, n nodes.Node) (bool, error) {
 	arr, ok := n.(nodes.Array)
 	if !ok {
 		return filtered("%+v is not a list, %+v", n, op)
@@ -47,7 +47,7 @@ func (op opArr) Check(st *State, n nodes.Node) (bool, error) {
 	return true, nil
 }
 
-func (op opArr) Construct(st *State, n nodes.Node) (nodes.Node, error) {
+func (op OpArr) Construct(st *State, n nodes.Node) (nodes.Node, error) {
 	if err := noNode(n); err != nil {
 		return nil, err
 	}
@@ -142,7 +142,7 @@ func (opLookupArrOp) Kinds() nodes.Kind {
 	return nodes.KindArray
 }
 
-func (op opLookupArrOp) Arr(st *State) (opArr, error) {
+func (op opLookupArrOp) Arr(st *State) (OpArr, error) {
 	vn, err := st.MustGetVar(op.vr)
 	if err != nil {
 		return nil, err
@@ -310,8 +310,8 @@ func (opAppendArr) Kinds() nodes.Kind {
 	return nodes.KindArray
 }
 
-func (op opAppendArr) Arr(st *State) (opArr, error) {
-	var arr opArr
+func (op opAppendArr) Arr(st *State) (OpArr, error) {
+	var arr OpArr
 	for _, sub := range op.arrs {
 		a, err := sub.Arr(st)
 		if err != nil {
