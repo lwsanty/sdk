@@ -84,7 +84,7 @@ var opsCases = []struct {
 		exp:  arrObjVal("v2", nil),
 	},
 	{
-		name: "arr save",
+		name: "Arr save",
 		inp:  arrObjInt("v", 1),
 		src:  One(Obj{"v": Var("x")}),
 		dst:  One(Obj{"v2": Var("x")}),
@@ -800,7 +800,7 @@ var opsCases = []struct {
 		inp: func() un.Node {
 			return un.Object{
 				"type": un.String("A"),
-				"arr": un.Array{
+				"Arr": un.Array{
 					un.Object{
 						"type": un.String("B"),
 						"name": un.String("B1"),
@@ -811,7 +811,7 @@ var opsCases = []struct {
 		src: Fields{
 			{Name: "type", Op: String("A")},
 			{
-				Name: "arr", Optional: "hasArr",
+				Name: "Arr", Optional: "hasArr",
 				Op: Append(
 					Each("elems",
 						Obj{
@@ -831,7 +831,7 @@ var opsCases = []struct {
 		dst: Fields{
 			{Name: "type", Op: String("A")},
 			{
-				Name: "arr", Optional: "hasArr",
+				Name: "Arr", Optional: "hasArr",
 				Op: Append(
 					Each("elems",
 						Obj{
@@ -851,7 +851,7 @@ var opsCases = []struct {
 		exp: func() un.Node {
 			return un.Object{
 				"type": un.String("A"),
-				"arr": un.Array{
+				"Arr": un.Array{
 					un.Object{
 						"type":  un.String("B"),
 						"name2": un.String("B1"),
@@ -891,12 +891,12 @@ var opsCases = []struct {
 				// case 1: array
 				Obj{
 					"name2": Var("name"),
-					"arr":   Bool(true),
+					"Arr":   Bool(true),
 				},
 				// case 2: string
 				Obj{
 					"name2": Var("name"),
-					"arr":   Bool(false),
+					"Arr":   Bool(false),
 				},
 			},
 		),
@@ -905,12 +905,12 @@ var opsCases = []struct {
 				un.Object{
 					"type":  un.String("ident"),
 					"name2": un.String("A"),
-					"arr":   un.Bool(true),
+					"Arr":   un.Bool(true),
 				},
 				un.Object{
 					"type":  un.String("ident"),
 					"name2": un.String("B"),
-					"arr":   un.Bool(false),
+					"Arr":   un.Bool(false),
 				},
 			}
 		},

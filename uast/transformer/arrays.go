@@ -10,7 +10,7 @@ func MapEach(vr string, m Mapping) Mapping {
 // ArrayOp is a subset of operations that operates on an arrays with a pre-defined size. See Arr.
 type ArrayOp interface {
 	Op
-	arr(st *State) (opArr, error)
+	Arr(st *State) (opArr, error)
 }
 
 // Arr checks if the current object is a list with a number of elements
@@ -27,7 +27,7 @@ func (opArr) Kinds() nodes.Kind {
 	return nodes.KindArray
 }
 
-func (op opArr) arr(_ *State) (opArr, error) {
+func (op opArr) Arr(_ *State) (opArr, error) {
 	return op, nil
 }
 func (op opArr) Check(st *State, n nodes.Node) (bool, error) {
@@ -142,7 +142,7 @@ func (opLookupArrOp) Kinds() nodes.Kind {
 	return nodes.KindArray
 }
 
-func (op opLookupArrOp) arr(st *State) (opArr, error) {
+func (op opLookupArrOp) Arr(st *State) (opArr, error) {
 	vn, err := st.MustGetVar(op.vr)
 	if err != nil {
 		return nil, err
@@ -158,11 +158,11 @@ func (op opLookupArrOp) arr(st *State) (opArr, error) {
 		}
 		sub = op.def
 	}
-	return sub.arr(st)
+	return sub.Arr(st)
 }
 
 func (op opLookupArrOp) Check(st *State, n nodes.Node) (bool, error) {
-	sub, err := op.arr(st)
+	sub, err := op.Arr(st)
 	if err != nil {
 		return false, err
 	}
@@ -170,7 +170,7 @@ func (op opLookupArrOp) Check(st *State, n nodes.Node) (bool, error) {
 }
 
 func (op opLookupArrOp) Construct(st *State, n nodes.Node) (nodes.Node, error) {
-	sub, err := op.arr(st)
+	sub, err := op.Arr(st)
 	if err != nil {
 		return nil, err
 	}
@@ -249,7 +249,7 @@ func (op opAppend) Check(st *State, n nodes.Node) (bool, error) {
 	if !ok {
 		return filtered("%+v is not a list, %+v", n, op)
 	}
-	sarr, err := op.arrs.arr(st)
+	sarr, err := op.arrs.Arr(st)
 	if err != nil {
 		return false, err
 	}
@@ -277,7 +277,7 @@ func (op opAppend) Construct(st *State, n nodes.Node) (nodes.Node, error) {
 	if !ok {
 		return nil, ErrExpectedList.New(n)
 	}
-	sarr, err := op.arrs.arr(st)
+	sarr, err := op.arrs.Arr(st)
 	if err != nil {
 		return nil, err
 	}
@@ -310,10 +310,10 @@ func (opAppendArr) Kinds() nodes.Kind {
 	return nodes.KindArray
 }
 
-func (op opAppendArr) arr(st *State) (opArr, error) {
+func (op opAppendArr) Arr(st *State) (opArr, error) {
 	var arr opArr
 	for _, sub := range op.arrs {
-		a, err := sub.arr(st)
+		a, err := sub.Arr(st)
 		if err != nil {
 			return nil, err
 		}
@@ -323,7 +323,7 @@ func (op opAppendArr) arr(st *State) (opArr, error) {
 }
 
 func (op opAppendArr) Check(st *State, n nodes.Node) (bool, error) {
-	sarr, err := op.arr(st)
+	sarr, err := op.Arr(st)
 	if err != nil {
 		return false, err
 	}
@@ -331,7 +331,7 @@ func (op opAppendArr) Check(st *State, n nodes.Node) (bool, error) {
 }
 
 func (op opAppendArr) Construct(st *State, n nodes.Node) (nodes.Node, error) {
-	sarr, err := op.arr(st)
+	sarr, err := op.Arr(st)
 	if err != nil {
 		return nil, err
 	}
